@@ -3,7 +3,7 @@
 # all paths should be configured wrt to the main directory
 ###################
 checkpoint: # add path to the checkpoint !
-model: ResNet
+model: ResNet18
 batch_size: 256
 epochs: 50
 data_dir: ./data
