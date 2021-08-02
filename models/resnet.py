@@ -8,6 +8,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from models.registry import MODELS_REGISTRY
+
 
 class BasicBlock(nn.Module):
     expansion = 1
@@ -101,25 +103,33 @@ class ResNet(nn.Module):
         out = self.linear(out)
         return out
 
-
-def ResNet18():
-    return ResNet(BasicBlock, [2, 2, 2, 2])
-
-
-def ResNet34():
-    return ResNet(BasicBlock, [3, 4, 6, 3])
+@MODELS_REGISTRY.register_module
+class ResNet18(ResNet):
+    def __init__(self):
+        super().__init__(BasicBlock, [2, 2, 2, 2])
 
 
-def ResNet50():
-    return ResNet(Bottleneck, [3, 4, 6, 3])
+@MODELS_REGISTRY.register_module
+class ResNet34():
+    def __init__(self) -> None:
+        super().__init__(BasicBlock, [3, 4, 6, 3])
 
 
-def ResNet101():
-    return ResNet(Bottleneck, [3, 4, 23, 3])
+@MODELS_REGISTRY.register_module
+class ResNet50():
+    def __init__(self) -> None:
+        super().__init__(Bottleneck, [3, 4, 6, 3])
 
 
-def ResNet152():
-    return ResNet(Bottleneck, [3, 8, 36, 3])
+@MODELS_REGISTRY.register_module
+class ResNet101():
+    def __init__(self) -> None:
+        super().__init__(Bottleneck, [3, 4, 23, 3])
+
+@MODELS_REGISTRY.register_module
+class ResNet152():
+    def __init__(self) -> None:
+        super().__init__(Bottleneck, [3, 8, 36, 3])
 
 
 def test():

@@ -15,7 +15,7 @@ import os
 import argparse
 import logging
 
-from models import *
+from models.registry import MODELS_REGISTRY
 
 
 import hydra
@@ -77,7 +77,8 @@ def my_app(cfg : DictConfig) -> None:
 
     logger.info("Building the moded now")
     
-    net = ResNet18()
+    net_class = MODELS_REGISTRY.get(cfg.model)
+    net = net_class()
     net = net.to(DEVICE)
 
     if cfg.checkpoint:
