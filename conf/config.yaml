@@ -1,0 +1,14 @@
+###################
+# Instructions
+# all paths should be configured wrt to the main directory
+###################
+checkpoint: # add path to the checkpoint !
+model: ResNet
+batch_size: 256
+epochs: 50
+data_dir: ./data
+
+
+val_interval: 10
+val_batches: 5
+lr: 0.1
