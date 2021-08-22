@@ -5,10 +5,18 @@
 checkpoint: # add path to the checkpoint !
 model: ResNet18
 batch_size: 256
-epochs: 50
+epochs: 75
 data_dir: ./data
 
 
 val_interval: 10
 val_batches: 5
-lr: 0.1
+optimizer:
+  name: ranger
+  lr: 2.2e-3
+scheduler:
+  name: CosineAnnealingLR
+  T_max: 200
+  milestones: [5, 10, 15, 20]
+  gamma: 0.5
+
