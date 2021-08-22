@@ -1,27 +1,25 @@
 '''Train CIFAR10 with PyTorch.'''
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import torch.nn.functional as F
-
-import hydra
-
-import torchvision
-import torchvision.transforms as transforms
-
-from torch.utils.tensorboard import SummaryWriter
-
 import os
 import argparse
 import logging
 
-from models.registry import MODELS_REGISTRY
-
-
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.nn.functional as F
+import torchvision
+import torchvision.transforms as transforms
+from torch.utils.tensorboard import SummaryWriter
 import hydra
-
 from omegaconf import DictConfig, OmegaConf
 from hydra.utils import get_original_cwd, to_absolute_path
+
+from models.registry import MODELS_REGISTRY
+from core.optim.optimizers import get_optimizer
+from utils.type_utils import filter_args
+
+
+
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -93,9 +91,17 @@ def my_app(cfg : DictConfig) -> None:
 
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(net.parameters(), lr=cfg.lr,
-                        momentum=0.9, weight_decay=5e-4)
-    # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
+    
+    
+    optimizer = get_optimizer(cfg.optimizer.name)
+    optimizer = optimizer(net.parameters(), **filter_args(optimizer, cfg.optimizer))
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
+    # scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[5, 10, 50, 74], gamma=0.5)
+
+
+    # optimizer = optim.SGD(net.parameters(), lr=cfg.lr,
+                        # momentum=0.9, weight_decay=5e-4)
+    
 
 
     # training and validation loops
